@@ -1,0 +1,4 @@
+# django-socials
+
+pre alpha
+

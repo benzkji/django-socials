@@ -1,0 +1,20 @@
+{% spaceless %}
+<div class="plugin plugin-instagram">
+    {% if object.title %}
+        <h2>{{ object.title }}</h2>
+        <ul class="instagram-list">
+            {% for p in object.get_posts %}
+                <li class="instagram-post">
+                    <a class="instagram-link" href="{{ p.get_url }}" target="_blank">
+                        <img class="image lazyload" data-src="{{ p.get_thumbnail_url }}" alt="Instagram post: {{ p.get_date_str }} ">
+                        <time>{{ p.get_date_str }}</time>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="buttons">
+            <a class="button" href="{{ object.configuration.url }}">{{ object.button_label }}</a>
+        </div>
+    {% endif %}
+</div>
+{% endspaceless %}
