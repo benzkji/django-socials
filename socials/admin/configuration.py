@@ -22,5 +22,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
         'name',
     ]
     readonly_fields = [
-        'refresh_date',
+        'date_added',
+        'date_changed',
+        'date_changed',
     ]
