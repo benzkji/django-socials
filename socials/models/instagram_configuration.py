@@ -97,22 +97,24 @@ class InstagramConfiguration(Configuration):
         """
         now = timezone.now()
         limit = now - timedelta(days=20)
-        data = {}
-        if self.refresh_date < limit:
+        # TODO: use expires_in from response data?
+        if self.token_refresh_date < limit:
             url = '{}refresh_access_token'.format(conf.INSTAGRAM_API)
             params = {
                 'grant_type': 'ig_refresh_token',
                 'access_token': self.token
             }
-            req = requests.get(url, params=params)
-            data = req.json()
+            response = requests.get(url, params=params)
+            data = response.json()
         else:
-            print('got a fresch token')
-        if data:
+            print('no need to get a fresch token')
+        if response.status_code == 200 and data:
             self.token = data.get('access_token')
             self.refresh_date = now
+            self.token_ok = True
             self.save()
         elif settings.DEBUG:
+            self.token_ok = False
             print('could not refresh token')
 
     def get_media(self):
@@ -165,17 +167,16 @@ class InstagramConfiguration(Configuration):
             #     obj.save()
 
     def get_data_dict(self, post):
-        if post.data.get('timestamp', None):
-            string = post.data['timestamp']
+        if post.original_data.get('timestamp', None):
+            string = post.original_data['timestamp']
             date = datetime.strptime(string, '%Y-%m-%dT%H:%M:%S+%f')
-            print(date)
-        if post.data['media_type'] == 'VIDEO':
-            image_url = post.data.get('thumbnail_url', '')
+        if post.original_data['media_type'] == 'VIDEO':
+            image_url = post.original_data.get('thumbnail_url', '')
         else:  # naive fallback. know at least about "VIDEO"...
-            image_url = post.data.get('media_url', '')
+            image_url = post.original_data.get('media_url', '')
         return {
-            'title': truncatechars(post.data.get('caption', ''), 60),
-            'description': post.data.get('caption', ''),
+            'title': truncatechars(post.original_data.get('caption', ''), 60),
+            'description': post.original_data.get('caption', ''),
             'image_url': image_url,
             'date': date,
         }

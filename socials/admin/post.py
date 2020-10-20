@@ -32,5 +32,5 @@ class PostAdmin(admin.ModelAdmin):
         'date',
         'configuration',
         'original_id',
-        'data',
+        'original_data',
     ]

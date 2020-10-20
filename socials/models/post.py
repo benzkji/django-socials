@@ -23,10 +23,6 @@ class Post(models.Model):
     date_changed = models.DateTimeField(
         auto_now=True,
     )
-    date = models.DateTimeField(
-        verbose_name=_('Post Date'),
-        null=True,
-    )
     published = models.BooleanField(
         default=True,
         verbose_name=_('published/visible'),
@@ -41,10 +37,42 @@ class Post(models.Model):
         blank=False,
         verbose_name=_('Original ID'),
     )
-    data = JSONField(
+    original_data = JSONField(
         blank=True,
         default=dict,
         verbose_name=_('Original Data'),
+    )
+
+    # to add: title / description / image (local image) / image_url / url / original_data (instead of data)
+    date = models.DateTimeField(
+        verbose_name=_('Post Date'),
+        null=True,
+    )
+    title = models.CharField(
+        max_length=128,
+        default='',
+        blank=True,
+        verbose_name=_('Title'),
+    )
+    description = models.TextField(
+        default='',
+        blank=True,
+        verbose_name=_('Description'),
+    )
+    image = models.ImageField(
+        upload_to='post-images',
+        null=True,
+        blank=True,
+    )
+    url = models.URLField(
+        default='',
+        blank=True,
+        verbose_name=_('Post URL (permalink)'),
+    )
+    image_url = models.URLField(
+        default='',
+        blank=True,
+        verbose_name=_('Image URL'),
     )
     tags = models.ManyToManyField(
         'socials.Tag',
@@ -78,13 +106,13 @@ class Post(models.Model):
 
     def get_thumbnail_url(self):
         # TODO clean up this mess
-        url = self.data.get('thumbnail_url')
+        url = self.original_data.get('thumbnail_url')
         if not url:
-            url = self.data.get('media_url')
+            url = self.original_data.get('media_url')
         return url or ''
 
     def get_url(self):
-        return self.data.get('permalink') or ''
+        return self.original_data.get('permalink') or ''
 
     def get_admin_thumbnail(self):
         url = self.get_thumbnail_url()

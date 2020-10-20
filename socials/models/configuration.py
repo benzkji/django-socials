@@ -47,7 +47,7 @@ class Configuration(models.Model):
                 original_id=original_id,
                 configuration=self,
             )
-            post.data = post_data['data']
+            post.original_data = post_data['data']
             post.date = self.get_data_dict(post).get('date', timezone.now())
             # print(self.get_data_dict(post).get('date'))
             post.save()

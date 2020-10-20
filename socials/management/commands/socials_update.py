@@ -8,7 +8,7 @@ class Command(BaseCommand):
     help = 'Get latest social posts'
 
     def handle(self, *args, **options):
-        for configuration in Configuration.objects.all():
+        for configuration in Configuration.objects.filter(active=True):
             if configuration.instagramconfiguration:
                 child = configuration.instagramconfiguration
             if child:
