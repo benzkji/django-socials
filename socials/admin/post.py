@@ -18,16 +18,19 @@ class PostAdmin(admin.ModelAdmin):
     form = PostAdminForm
     list_display = [
         'get_admin_thumbnail',
+        'date',
+        'get_title',
+        'published',
         'configuration',
-        'is_visible',
     ]
     list_filter = [
+        'published',
         'configuration',
     ]
     readonly_fields = [
         'get_admin_thumbnail',
         'date',
         'configuration',
-        'originalid',
+        'original_id',
         'data',
     ]

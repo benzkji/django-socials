@@ -5,6 +5,8 @@ from django.utils.html import mark_safe
 from django.utils.timezone import now
 from django.utils.translation import ugettext_lazy as _
 
+from socials import conf
+
 try:
     # django >= 3
     from django.db.models import JSONField
@@ -21,23 +23,22 @@ class Post(models.Model):
     date_changed = models.DateTimeField(
         auto_now=True,
     )
-
     date = models.DateTimeField(
-        verbose_name=_('Date'),
+        verbose_name=_('Post Date'),
+        null=True,
     )
-    is_visible = models.BooleanField(
+    published = models.BooleanField(
         default=True,
-        verbose_name=_('Is visible'),
+        verbose_name=_('published/visible'),
     )
     configuration = models.ForeignKey(
         'socials.Configuration',
         null=True,
         on_delete=models.CASCADE,
     )
-    originalid = models.BigIntegerField(
-        blank=True,
-        null=True,
-        default=None,
+    original_id = models.CharField(
+        max_length=128,
+        blank=False,
         verbose_name=_('Original ID'),
     )
     data = JSONField(
@@ -45,38 +46,35 @@ class Post(models.Model):
         default=dict,
         verbose_name=_('Original Data'),
     )
+    tags = models.ManyToManyField(
+        'socials.Tag',
+        blank=True,
+    )
 
     class Meta:
         ordering = ['-date']
         unique_together = [
-            ['configuration', 'originalid'],
+            ['configuration', 'original_id'],
         ]
-        verbose_name = _('Posts')
+        verbose_name = _('Post')
         verbose_name_plural = _('Posts')
 
     def __str__(self):
-        return '{}'.format(self.originalid)
+        return '{}'.format(self.original_id)
 
-    def save(self, **kwargs):
-        self.date = self.get_date()
-        super().save(**kwargs)
+    def get_title(self):
+        return self.configuration.get_data_dict(self).get('title', '')
 
-    def get_caption(self):
-        return self.data.get('caption', '')
+    def get_description(self):
+        return self.configuration.get_data_dict(self).get('description', '')
 
     def get_date(self):
-        if self.data.get('timestamp'):
-            string = self.data['timestamp']
-            # TODO set that in conf
-            format = '%Y-%m-%dT%H:%M:%S+%f'
-            return datetime.strptime(string, format)
-        else:
-            return now()
+        return self.configuration.get_data_dict(self).get('date', '')
 
     def get_date_str(self):
         date = self.get_date()
-        return date.strftime('%d.%m.%Y')
-    get_date_str.short_description = _('Date')
+        return date.strftime(conf.DATE_FORMAT)
+    # get_date_str.short_description = _('Date')
 
     def get_thumbnail_url(self):
         # TODO clean up this mess
@@ -91,6 +89,6 @@ class Post(models.Model):
     def get_admin_thumbnail(self):
         url = self.get_thumbnail_url()
         if url:
-            html = '<img class="socials-thumb" src="{}" alt="">'.format(url)
+            html = '<img style="max-width: 150px" class="socials-thumb" src="{}" alt="">'.format(url)
             return mark_safe(html)
     get_admin_thumbnail.short_description = _('Thumbnail')

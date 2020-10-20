@@ -8,6 +8,8 @@ class Command(BaseCommand):
     help = 'Get latest social posts'
 
     def handle(self, *args, **options):
-        configuration = Configuration.objects.get_latest()
-        configuration.refresh_token()
-        configuration.refresh_media()
+        for configuration in Configuration.objects.all():
+            if configuration.instagramconfiguration:
+                child = configuration.instagramconfiguration
+            if child:
+                child.refresh()

@@ -1,26 +1,17 @@
-import requests
-
-from datetime import timedelta
-
-from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-
 from .. import conf
+from .tag import Tag
 from .post import Post
 
-#
-# class ConfigurationManager(models.Manager):
-#
-#     def get_latest(self):
-#         qs = self.get_queryset()
-#         return qs.first()
-#
 
 class Configuration(models.Model):
 
+    active = models.BooleanField(
+        default=True,
+    )
     date_added = models.DateTimeField(
         auto_now_add=True,
     )
@@ -40,3 +31,31 @@ class Configuration(models.Model):
 
     def __str__(self):
         return '{}'.format(self.name)
+
+    def get_data_dict(self, post):
+        data_dict = None
+        if self.instagramconfiguration:
+            data_dict = self.instagramconfiguration.get_data_dict(post)
+        if data_dict:
+            return data_dict
+        return {}
+
+    def persist_post(self, post_data):
+        original_id = post_data.get('original_id', None)
+        if (original_id):
+            post, created = Post.objects.get_or_create(
+                original_id=original_id,
+                configuration=self,
+            )
+            post.data = post_data['data']
+            post.date = self.get_data_dict(post).get('date', timezone.now())
+            # print(self.get_data_dict(post).get('date'))
+            post.save()
+            if conf.ENABLE_TAGS:
+                tags = []
+                for tag_name in post_data.get('tags', []):
+                    tag, created = Tag.objects.get_or_create(
+                        name=tag_name,
+                    )
+                    tags.append(tag)
+                post.tags.set(tags)

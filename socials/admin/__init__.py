@@ -5,6 +5,5 @@ from .instagram_configuration import InstagramConfiguration, InstagramConfigurat
 from .post import Post, PostAdmin
 
 
-admin.site.register(Configuration, ConfigurationAdmin)
 admin.site.register(InstagramConfiguration, InstagramConfigurationAdmin)
 admin.site.register(Post, PostAdmin)

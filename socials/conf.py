@@ -1,14 +1,20 @@
+import sys
+
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
+
+from socials.utils import check_settings
 
 
+# globals
+ENABLE_TAGS = False
+DATE_FORMAT = '%d.%m.%Y'
+
+# insta
 INSTAGRAM_API = 'https://graph.instagram.com/'
 
+# fb
 
-POST_TYPE_CHOICES = getattr(
-    settings,
-    'SOCIALS_POST_TYPE_CHOICES',
-    [
-        ('instagram', _('Instagram')),
-    ]
-)
+# tweetie
+
+
+check_settings('SOCIALS', sys.modules[__name__], settings)
