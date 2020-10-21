@@ -61,7 +61,7 @@ class Configuration(models.Model):
                 tags = []
                 for tag_name in post_data.get('tags', []):
                     tag, created = Tag.objects.get_or_create(
-                        name=tag_name,
+                        name=tag_name[:64],
                     )
                     tags.append(tag)
                 post.tags.set(tags)
