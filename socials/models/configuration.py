@@ -47,9 +47,15 @@ class Configuration(models.Model):
                 original_id=original_id,
                 configuration=self,
             )
-            post.original_data = post_data['data']
-            post.date = self.get_data_dict(post).get('date', timezone.now())
-            # print(self.get_data_dict(post).get('date'))
+            post.original_data = post_data['original_data']
+            post.date = post_data.get('date', timezone.now())
+            post.title = post_data.get('title', '',)
+            post.description = post_data.get('description', '',)
+            post.image_url = post_data.get('image_url', '',)
+            post.url = post_data.get('url', '',)
+            # TODO: save image?
+            if conf.LOCAL_IMAGES:
+                pass
             post.save()
             if conf.ENABLE_TAGS:
                 tags = []

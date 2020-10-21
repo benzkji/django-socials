@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .configuration import Configuration, ConfigurationAdmin
 from .instagram_configuration import InstagramConfiguration, InstagramConfigurationAdmin
-from .post import Post, PostAdmin
+from .post import PostAdmin
+from ..models import Post
 
 
 admin.site.register(InstagramConfiguration, InstagramConfigurationAdmin)

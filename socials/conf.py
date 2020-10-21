@@ -6,11 +6,14 @@ from socials.utils import check_settings
 
 
 # globals
-ENABLE_TAGS = False
-DATE_FORMAT = '%d.%m.%Y'
+ENABLE_TAGS = False  # parse hashtags?
+DATE_FORMAT = '%d.%m.%Y'  # output date format
+LOCAL_IMAGES = True  # save images to local media folder
 
 # insta
 INSTAGRAM_API = 'https://graph.instagram.com/'
+INSTAGRAM_TITLE_TRUNCATE = 60
+# not yet?! INSTAGRAM_REFRESH_TOKEN_BEFORE_EXPIRE = 1209600  # 14 days
 
 # fb
 

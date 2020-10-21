@@ -90,33 +90,17 @@ class Post(models.Model):
     def __str__(self):
         return '{}'.format(self.original_id)
 
-    def get_title(self):
-        return self.configuration.get_data_dict(self).get('title', '')
-
-    def get_description(self):
-        return self.configuration.get_data_dict(self).get('description', '')
-
-    def get_date(self):
-        return self.configuration.get_data_dict(self).get('date', '')
-
-    def get_date_str(self):
-        date = self.get_date()
-        return date.strftime(conf.DATE_FORMAT)
-    # get_date_str.short_description = _('Date')
-
-    def get_thumbnail_url(self):
-        # TODO clean up this mess
-        url = self.original_data.get('thumbnail_url')
-        if not url:
-            url = self.original_data.get('media_url')
-        return url or ''
-
-    def get_url(self):
-        return self.original_data.get('permalink') or ''
-
     def get_admin_thumbnail(self):
-        url = self.get_thumbnail_url()
+        url = self.image_url
         if url:
             html = '<img style="max-width: 150px" class="socials-thumb" src="{}" alt="">'.format(url)
             return mark_safe(html)
+    get_admin_thumbnail.short_description = _('Thumbnail')
+
+    def get_admin_title(self):
+        url = self.url
+        html = self.title
+        if url:
+            html += ' <a href="{}" target="_blank">open</a>'.format(url)
+        return mark_safe(html)
     get_admin_thumbnail.short_description = _('Thumbnail')
