@@ -13,12 +13,12 @@ class SocialFeed(CMSPlugin):
     )
     configurations = models.ManyToManyField(
         'socials.Configuration',
-        null=True,
+        blank=True,
         verbose_name=_('Source Configurations')
     )
     hash_tags = models.ManyToManyField(
         'socials.Tag',
-        null=True,
+        blank=True,
         verbose_name=_('Hashtags')
     )
 
