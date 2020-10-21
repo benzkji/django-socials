@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as __
 
 from cms.models import CMSPlugin
 
@@ -27,7 +28,7 @@ class SocialFeed(CMSPlugin):
         verbose_name_plural = _('Social Feeds')
 
     def __str__(self):
-        return _('Social Feed')
+        return __('Social Feed')
 
     def get_posts(self):
         posts = Post.objects.filter(published=True)
