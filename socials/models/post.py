@@ -65,11 +65,13 @@ class Post(models.Model):
         blank=True,
     )
     url = models.URLField(
+        max_length=256,
         default='',
         blank=True,
         verbose_name=_('Post URL (permalink)'),
     )
     image_url = models.URLField(
+        max_length=256,
         default='',
         blank=True,
         verbose_name=_('Image URL'),
