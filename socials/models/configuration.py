@@ -47,12 +47,12 @@ class Configuration(models.Model):
                 original_id=original_id,
                 configuration=self,
             )
-            post.original_data = post_data['original_data']
+            # post.original_data = post_data['original_data']
             post.date = post_data.get('date', timezone.now())
-            post.title = post_data.get('title', '',)[:127]
-            post.description = post_data.get('description', '',)
-            post.image_url = post_data.get('image_url', '',)[:255]
-            post.url = post_data.get('url', '',)[:255]
+            post.title = post_data.get('title', '',)[:128]
+            # post.description = post_data.get('description', '',)
+            post.image_url = post_data.get('image_url', '',)[:512]
+            post.url = post_data.get('url', '',)[:256]
             # TODO: save image?
             if conf.LOCAL_IMAGES:
                 pass

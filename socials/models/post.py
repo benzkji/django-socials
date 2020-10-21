@@ -71,7 +71,7 @@ class Post(models.Model):
         verbose_name=_('Post URL (permalink)'),
     )
     image_url = models.URLField(
-        max_length=256,
+        max_length=512,
         default='',
         blank=True,
         verbose_name=_('Image URL'),
