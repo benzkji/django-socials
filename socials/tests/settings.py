@@ -61,6 +61,8 @@ EXTERNAL_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     # 'django_nose',
+    # 'cms',
+    # 'sekizai',
 ]
 
 INTERNAL_APPS = [
