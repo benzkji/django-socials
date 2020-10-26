@@ -1,0 +1,8 @@
+<section class="plugin plugin-socials">
+    {% for post in object.get_posts %}
+        <a target="_blank" href="{{ post.url }}" class="plugin-socials__post">
+            <img src="{{ post.image_url }}" alt="{{ post.title }}">
+            <p>{{ object.title }}</p>
+        </a>
+    {% endfor %}
+</section>
