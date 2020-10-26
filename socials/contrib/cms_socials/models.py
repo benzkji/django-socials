@@ -32,9 +32,9 @@ class SocialFeed(CMSPlugin):
 
     def get_posts(self):
         posts = Post.objects.filter(published=True)
-        if self.configurations:
+        if self.configurations.all().count():
             posts = posts.filter(configuration__in=self.configurations.all())
-        if self.hash_tags:
+        if self.hash_tags.all().count():
             posts = posts.filter(tags__in=self.hash_tags.all())
         posts = posts[:self.amount]
         return posts
