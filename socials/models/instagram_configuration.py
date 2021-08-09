@@ -88,6 +88,8 @@ class InstagramConfiguration(Configuration):
         now = timezone.now()
         limit = now - timedelta(days=20)
         # TODO: use expires_in from response data?
+        print(self.token_refresh_date)
+        print(limit)
         if self.token_refresh_date < limit:
             url = '{}refresh_access_token'.format(conf.INSTAGRAM_API)
             params = {
@@ -101,7 +103,7 @@ class InstagramConfiguration(Configuration):
             return
         if response.status_code == 200 and data:
             self.token = data.get('access_token')
-            self.refresh_date = now
+            self.token_refresh_date = now
             self.token_ok = True
             self.save()
         elif settings.DEBUG:
@@ -141,6 +143,7 @@ class InstagramConfiguration(Configuration):
             self.save()
             return
         json = response.json()
+        print(json)
         if response.status_code == 200 and json.get('data', None):
             return json['data']
         elif conf.settings.DEBUG:
