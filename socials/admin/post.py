@@ -2,7 +2,6 @@ from django.contrib import admin
 
 
 class PostAdmin(admin.ModelAdmin):
-
     list_links = [
         'get_admin_thumbnail',
         'date',
@@ -13,6 +12,9 @@ class PostAdmin(admin.ModelAdmin):
         'get_admin_title',
         'published',
         'configuration',
+    ]
+    list_editable = [
+        'published',
     ]
     list_filter = [
         'published',
