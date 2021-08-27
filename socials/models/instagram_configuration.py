@@ -141,9 +141,10 @@ class InstagramConfiguration(Configuration):
             # bad request!
             self.token_ok = False
             self.save()
+            if conf.settings.DEBUG:
+                print('error 400 when getting media')
             return
         json = response.json()
-        print(json)
         if response.status_code == 200 and json.get('data', None):
             return json['data']
         elif conf.settings.DEBUG:
@@ -165,6 +166,8 @@ class InstagramConfiguration(Configuration):
             post_data['original_data'] = m
             self.configuration_ptr.persist_post(post_data)
         self.posts_refresh_date = timezone.now()
+        if conf.settings.DEBUG:
+            print('refresh media: SUCCESS')
         self.save()
 
     def get_data_dict(self, json_data):
