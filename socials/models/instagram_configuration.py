@@ -88,8 +88,9 @@ class InstagramConfiguration(Configuration):
         now = timezone.now()
         limit = now - timedelta(days=20)
         # TODO: use expires_in from response data?
-        print(self.token_refresh_date)
-        print(limit)
+        if conf.DEBUG:
+            print(self.token_refresh_date)
+            print(limit)
         if self.token_refresh_date < limit:
             url = '{}refresh_access_token'.format(conf.INSTAGRAM_API)
             params = {
@@ -99,14 +100,15 @@ class InstagramConfiguration(Configuration):
             response = requests.get(url, params=params)
             data = response.json()
         else:
-            print('no need to get a fresch token yet')
+            if conf.DEBUG:
+                print('no need to get a fresch token yet')
             return
         if response.status_code == 200 and data:
             self.token = data.get('access_token')
             self.token_refresh_date = now
             self.token_ok = True
             self.save()
-        elif settings.DEBUG:
+        elif conf.DEBUG:
             self.token_ok = False
             self.save()
             print('could not refresh token')
@@ -134,20 +136,20 @@ class InstagramConfiguration(Configuration):
             ConnectionAbortedError,
             ConnectionResetError,
         ) as e:
-            if conf.settings.DEBUG:
+            if conf.DEBUG:
                 print(e)
             return
         if response.status_code == 400:
             # bad request!
             self.token_ok = False
             self.save()
-            if conf.settings.DEBUG:
+            if conf.DEBUG:
                 print('error 400 when getting media')
             return
         json = response.json()
         if response.status_code == 200 and json.get('data', None):
             return json['data']
-        elif conf.settings.DEBUG:
+        elif conf.DEBUG:
             print(json.get('error'))
         return
 
@@ -166,7 +168,7 @@ class InstagramConfiguration(Configuration):
             post_data['original_data'] = m
             self.configuration_ptr.persist_post(post_data)
         self.posts_refresh_date = timezone.now()
-        if conf.settings.DEBUG:
+        if conf.DEBUG:
             print('refresh media: SUCCESS')
         self.save()
 
