@@ -9,6 +9,7 @@ from socials.utils import check_settings
 ENABLE_TAGS = False  # parse hashtags?
 DATE_FORMAT = '%d.%m.%Y'  # output date format
 LOCAL_IMAGES = True  # save images to local media folder
+DEBUG = False
 
 # insta
 INSTAGRAM_API = 'https://graph.instagram.com/'
