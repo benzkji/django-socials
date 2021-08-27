@@ -58,7 +58,7 @@ class InstagramConfigurationAdmin(admin.ModelAdmin):
         'date_added',
         'date_changed',
         'token',
-        'token_ok',
+        # 'token_ok',
         'token_refresh_date',
         'posts_refresh_date',
     ]
