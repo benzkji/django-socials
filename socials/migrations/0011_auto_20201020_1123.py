@@ -4,40 +4,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('socials', '0010_auto_20201020_1017'),
+        ("socials", "0010_auto_20201020_1017"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='post',
-            old_name='data',
-            new_name='original_data',
+            model_name="post",
+            old_name="data",
+            new_name="original_data",
         ),
         migrations.AddField(
-            model_name='post',
-            name='description',
-            field=models.TextField(blank=True, default='', verbose_name='Description'),
+            model_name="post",
+            name="description",
+            field=models.TextField(blank=True, default="", verbose_name="Description"),
         ),
         migrations.AddField(
-            model_name='post',
-            name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='post-images'),
+            model_name="post",
+            name="image",
+            field=models.ImageField(blank=True, null=True, upload_to="post-images"),
         ),
         migrations.AddField(
-            model_name='post',
-            name='image_url',
-            field=models.URLField(blank=True, default='', verbose_name='Image URL'),
+            model_name="post",
+            name="image_url",
+            field=models.URLField(blank=True, default="", verbose_name="Image URL"),
         ),
         migrations.AddField(
-            model_name='post',
-            name='title',
-            field=models.CharField(blank=True, default='', max_length=128, verbose_name='Title'),
+            model_name="post",
+            name="title",
+            field=models.CharField(
+                blank=True, default="", max_length=128, verbose_name="Title"
+            ),
         ),
         migrations.AddField(
-            model_name='post',
-            name='url',
-            field=models.URLField(blank=True, default='', verbose_name='Post URL (permalink)'),
+            model_name="post",
+            name="url",
+            field=models.URLField(
+                blank=True, default="", verbose_name="Post URL (permalink)"
+            ),
         ),
     ]

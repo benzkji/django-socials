@@ -1,9 +1,8 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 
 class Tag(models.Model):
-
     published = models.BooleanField(
         default=True,
     )
@@ -12,9 +11,9 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
-        verbose_name = _('Tag')
-        verbose_name_plural = _('Tags')
+        ordering = ["name"]
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
 
     def __str__(self):
         return self.name

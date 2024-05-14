@@ -4,18 +4,17 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('socials', '0011_auto_20201020_1123'),
+        ("socials", "0011_auto_20201020_1123"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='instagramconfiguration',
-            name='app_id',
+            model_name="instagramconfiguration",
+            name="app_id",
         ),
         migrations.RemoveField(
-            model_name='instagramconfiguration',
-            name='app_secret',
+            model_name="instagramconfiguration",
+            name="app_secret",
         ),
     ]

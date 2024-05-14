@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('socials', '0009_auto_20201020_0817'),
+        ("socials", "0009_auto_20201020_0817"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='post',
-            name='date',
-            field=models.DateTimeField(null=True, verbose_name='Post Date'),
+            model_name="post",
+            name="date",
+            field=models.DateTimeField(null=True, verbose_name="Post Date"),
         ),
         migrations.AlterField(
-            model_name='post',
-            name='tags',
-            field=models.ManyToManyField(blank=True, to='socials.Tag'),
+            model_name="post",
+            name="tags",
+            field=models.ManyToManyField(blank=True, to="socials.Tag"),
         ),
     ]

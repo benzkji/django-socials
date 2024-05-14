@@ -4,25 +4,28 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('socials', '0006_instagramconfiguration_posts_refresh_date'),
+        ("socials", "0006_instagramconfiguration_posts_refresh_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='configuration',
-            name='active',
+            model_name="configuration",
+            name="active",
             field=models.BooleanField(default=True),
         ),
         migrations.AlterField(
-            model_name='instagramconfiguration',
-            name='app_id',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Instagram App ID'),
+            model_name="instagramconfiguration",
+            name="app_id",
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name="Instagram App ID"
+            ),
         ),
         migrations.AlterField(
-            model_name='instagramconfiguration',
-            name='app_secret',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Instagram App Secret'),
+            model_name="instagramconfiguration",
+            name="app_secret",
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name="Instagram App Secret"
+            ),
         ),
     ]

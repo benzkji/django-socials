@@ -5,24 +5,20 @@ from ..models import Configuration
 
 
 class ConfigurationAdminForm(forms.ModelForm):
-
     class Meta:
-        fields = '__all__'
+        fields = "__all__"  # noqa
         model = Configuration
         labels = {}
-        widgets = {
-            'url': forms.TextInput
-        }
+        widgets = {"url": forms.TextInput}
 
 
 class ConfigurationAdmin(admin.ModelAdmin):
-
     form = ConfigurationAdminForm
     list_display = [
-        'name',
+        "name",
     ]
     readonly_fields = [
-        'date_added',
-        'date_changed',
-        'date_changed',
+        "date_added",
+        "date_changed",
+        "date_changed",
     ]

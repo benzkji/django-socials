@@ -4,20 +4,26 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('socials', '0002_auto_20201020_0453'),
+        ("socials", "0002_auto_20201020_0453"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='instagramconfiguration',
-            name='token',
-            field=models.CharField(blank=True, default='', max_length=255, verbose_name='Long-lived access token'),
+            model_name="instagramconfiguration",
+            name="token",
+            field=models.CharField(
+                blank=True,
+                default="",
+                max_length=255,
+                verbose_name="Long-lived access token",
+            ),
         ),
         migrations.AlterField(
-            model_name='instagramconfiguration',
-            name='token_refresh_date',
-            field=models.DateTimeField(null=True, verbose_name='Last long-lived token refresh'),
+            model_name="instagramconfiguration",
+            name="token_refresh_date",
+            field=models.DateTimeField(
+                null=True, verbose_name="Last long-lived token refresh"
+            ),
         ),
     ]

@@ -4,15 +4,14 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('socials', '0005_instagramconfiguration_token_ok'),
+        ("socials", "0005_instagramconfiguration_token_ok"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='instagramconfiguration',
-            name='posts_refresh_date',
-            field=models.DateTimeField(null=True, verbose_name='Last posts refresh'),
+            model_name="instagramconfiguration",
+            name="posts_refresh_date",
+            field=models.DateTimeField(null=True, verbose_name="Last posts refresh"),
         ),
     ]
