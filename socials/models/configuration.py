@@ -60,6 +60,10 @@ class Configuration(models.Model):
                 "image_url",
                 "",
             )[:512]
+            post.image = post_data.get(
+                "image",
+                None,
+            )
             post.url = post_data.get(
                 "url",
                 "",

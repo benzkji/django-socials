@@ -88,7 +88,10 @@ class Post(models.Model):
         return "{}".format(self.original_id)
 
     def get_admin_thumbnail(self):
-        url = self.image_url
+        if self.image:
+            url = self.image.url
+        else:
+            url = self.image_url
         if url:
             html = (
                 f'<img style="max-width: 150px" '

@@ -7,8 +7,8 @@ class PostAdmin(admin.ModelAdmin):
         "date",
     ]
     list_display = [
-        "get_admin_thumbnail",
         "date",
+        "get_admin_thumbnail",
         "get_admin_title",
         "published",
         "configuration",

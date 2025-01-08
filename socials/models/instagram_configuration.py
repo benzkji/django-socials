@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta
+import re
+import time
+import json
 
 import requests
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.db import models
 from django.template.defaultfilters import truncatechars
 from django.utils import timezone
@@ -48,85 +52,28 @@ class InstagramConfiguration(Configuration):
     def __str__(self):
         return "{}".format(self.name)
 
-    # def get_set_token(self, short_token):
-    #     """
-    #     not used yet, as we use the token generator
-    #     > basic display > scroll down to test users > generate token
-    #     :param short_token:
-    #     :return:
-    #     """
-    #     url = '{}access_token'.format(conf.INSTAGRAM_API)
-    #     params = {
-    #         'grant_type': 'ig_exchange_token',
-    #         'client_secret': self.app_secret,
-    #         'access_token': short_token
-    #     }
-    #     response = requests.get(url, params=params)
-    #     print(response.json())
-    #     """
-    #     should return:
-    #     {
-    #       "access_token": "{access-token}",
-    #       "token_type": "{token-type}",
-    #       "expires_in": {expires-in}
-    #     }
-    #     """
-    #     if response.status_code == 200:
-    #         json = response.json
-    #         self.token = json.get('access_token', '')
-    #         # self.token_expires = json.get('expires_in', 36000)
-    #         self.token_ok = True
-
     def refresh(self):
-        self.refresh_token()
         self.refresh_media()
 
-    def refresh_token(self):
-        """
-        naive way of refreshing the token
-        """
-        now = timezone.now()
-        limit = now - timedelta(days=20)
-        # TODO: use expires_in from response data?
-        if conf.DEBUG:
-            print(self.token_refresh_date)  # noqa
-            print(limit)  # noqa
-        if self.token_refresh_date < limit:
-            url = "{}refresh_access_token".format(conf.INSTAGRAM_API)
-            params = {"grant_type": "ig_refresh_token", "access_token": self.token}
-            response = requests.get(url, params=params)
-            data = response.json()
-        else:
-            if conf.DEBUG:
-                print("no need to get a fresch token yet")  # noqa
-            return
-        if response.status_code == 200 and data:
-            self.token = data.get("access_token")
-            self.token_refresh_date = now
-            self.token_ok = True
-            self.save()
-        elif conf.DEBUG:
-            self.token_ok = False
-            self.save()
-            print("could not refresh token")  # noqa
-            return
-
     def get_media(self):
-        url = "{}/me/media".format(conf.INSTAGRAM_API)
-        params = {
-            "access_token": self.token,
-            "fields": (
-                "id"
-                ",timestamp"
-                ",permalink"
-                ",media_type"
-                ",media_url"
-                ",caption"
-                ",thumbnail_url"
-            ),
-        }
+        s = requests.Session()
+        # s.headers.update({
+        #     "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0",
+        #     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+        #     "Accept-Language": "en-US,en;q=0.9",
+        #     "Cache-Control": "no-cache",
+        #     "Pragma": "no-cache",
+        # })
         try:
-            response = requests.get(url, params=params)
+            # url = "{}{}".format(conf.INSTAGRAM_URL, self.username)
+            # response1 = s.get(url)
+            # matches = re.search('"app_id":"([^"]*)"', response1.text)
+            # app_id = matches.group(1)
+            # info_url = f"{conf.INSTAGRAM_URL}api/v1/users/web_profile_info/?username={self.username}"
+            # time.sleep(2)
+            # response = s.get(info_url, headers={"X-App-Id": app_id})
+            url = "{}{}/embed/".format(conf.INSTAGRAM_URL, self.username)
+            response = s.get(url)
         except (
             ConnectionRefusedError,
             ConnectionError,
@@ -136,23 +83,28 @@ class InstagramConfiguration(Configuration):
             if conf.DEBUG:
                 print(e)  # noqa
             return
-        if response.status_code == 400:
+        if response.status_code >= 400:
             # bad request!
             self.token_ok = False
             self.save()
             if conf.DEBUG:
                 print("error 400 when getting media")  # noqa
             return
-        json = response.json()
-        if response.status_code == 200 and json.get("data", None):
-            return json["data"]
+        content = response.text
+        if response.status_code == 200:
+            for line in content.splitlines():
+                if re.match('.*"contextJSON":', line):
+                    line = re.sub('.*"contextJSON":"', "", line)
+                    line = re.sub('"}]],\["NavigationMetrics",.*', "", line)
+                    line = line.replace('\\"', '"')
+                    data = json.loads(line)
+                    data = data.get("context", {}).get("graphql_media", [])
+            return data
         elif conf.DEBUG:
             print(json.get("error"))  # noqa
         return
 
     def refresh_media(self):
-        if not self.token_ok:
-            return
         media = self.get_media()
         if media is None:
             return
@@ -170,20 +122,24 @@ class InstagramConfiguration(Configuration):
         self.save()
 
     def get_data_dict(self, json_data):
-        if json_data.get("timestamp", None):
-            string = json_data["timestamp"]
-            date = datetime.strptime(string, "%Y-%m-%dT%H:%M:%S+%f")
-        if json_data["media_type"] == "VIDEO":
-            image_url = json_data["thumbnail_url"]
-        else:  # naive fallback. know at least about "VIDEO"...
-            image_url = json_data["media_url"]
+        json_data = json_data["shortcode_media"]
+        if json_data.get("taken_at_timestamp", None):
+            string = json_data["taken_at_timestamp"]
+            # date = datetime.strptime(string, "%Y-%m-%dT%H:%M:%S+%f")
+            date = datetime.fromtimestamp(string)
+        image_url = json_data["display_url"].replace("\/", "/")
+        image = requests.get(image_url)
+        image_obj = SimpleUploadedFile(json_data.get("id", "") + ".jpg", image.content)
+        print(image_obj)
+        text = json_data.get("edge_media_to_caption", "")["edges"][0]["node"]["text"]
         return {
             "original_id": truncatechars(json_data.get("id", ""), ""),
             "title": truncatechars(
-                json_data.get("caption", ""), conf.INSTAGRAM_TITLE_TRUNCATE
+                text, conf.INSTAGRAM_TITLE_TRUNCATE
             ),
-            "description": json_data.get("caption", ""),
+            "description": text, # json_data.get("edge_media_to_caption", "")["edges"][0]["node"]["text"],
             "image_url": image_url,
+            "image": image_obj,
             "date": date,
             "url": json_data.get("permalink", ""),
         }
@@ -193,3 +149,4 @@ class InstagramConfiguration(Configuration):
         if amount:
             qs = qs[:amount]
         return qs
+
