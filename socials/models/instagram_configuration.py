@@ -130,8 +130,8 @@ class InstagramConfiguration(Configuration):
         image_url = json_data["display_url"].replace("\/", "/")
         image = requests.get(image_url)
         image_obj = SimpleUploadedFile(json_data.get("id", "") + ".jpg", image.content)
-        print(image_obj)
         text = json_data.get("edge_media_to_caption", "")["edges"][0]["node"]["text"]
+        print(f"https://www.instagram.com/p/{json_data.get('shortcode', )}")
         return {
             "original_id": truncatechars(json_data.get("id", ""), ""),
             "title": truncatechars(
@@ -141,7 +141,7 @@ class InstagramConfiguration(Configuration):
             "image_url": image_url,
             "image": image_obj,
             "date": date,
-            "url": json_data.get("permalink", ""),
+            "url": f"https://www.instagram.com/p/{json_data.get('shortcode', )}/",
         }
 
     def get_posts(self, amount=None):
